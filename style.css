@@ -1,0 +1,37 @@
+
+html,
+body{
+	margin: 10;
+	padding: 10;
+	height: 100vh;
+	width: 100vw;
+}
+#sean {
+	color: yellowgreen;	
+	width: 100px;
+	height: 100px;
+	border-style: dashed;
+	border-color: chocolate;
+}
+#test1 {
+	color: yellowgreen;
+	width:1000px;
+	hight:150px;
+	border:10px;
+	background-color: orange;
+	
+}
+#test2 {
+	width:100px;
+	hight:100px;
+	border: 10px;
+	border-color: green;
+	border-style: double;
+}
+#test3 {
+	width:100px;
+	hight:100px;
+	border: 10px;
+	border-color: blue;
+	border-style: ridge;
+}
