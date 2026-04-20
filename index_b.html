@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <!-- 設定視窗寬度等於裝置寬度，這對手機版顯示非常重要 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>賴修暘 Sean Lai | 個人檔案</title>
+    
+    <!-- 引入字體：Inter 用於英文數字，Noto Sans TC 用於中文 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS 變數：在這裡定義顏色，之後改顏色只要改這裡就好，非常方便 */
+        :root {
+            --primary: #2563eb;    /* 主色調：深藍 */
+            --secondary: #06b6d4;  /* 輔助色：青色 */
+            --text-main: #1f2937;  /* 主要文字顏色 */
+            --text-muted: #6b7280; /* 次要/淡色文字 */
+            --bg-body: #f3f4f6;    /* 整體背景灰 */
+            --bg-card: #ffffff;    /* 卡片背景白 */
+        }
+
+        /* 基礎樣式設定 */
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 1rem;
+            line-height: 1.6;
+        }
+
+        /* 內容容器：限制最大寬度並水平置中 */
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+        }
+
+        /* 履歷卡片：設定圓角、陰影與隱藏溢出內容 */
+        .profile-card {
+            background-color: var(--bg-card);
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* 頂部彩色裝飾條：使用線性漸層 */
+        .profile-banner {
+            height: 10rem;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+        }
+
+        /* 個人資訊區塊：利用負的 margin-top 讓頭像「浮」在裝飾條上 */
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 1.5rem 2rem;
+            margin-top: -5rem; /* 往上移動 5rem */
+            position: relative;
+        }
+
+        /* 大頭貼樣式：圓形、白框與陰影 */
+        .profile-avatar {
+            width: 9rem;
+            height: 9rem;
+            border-radius: 50%;
+            border: 6px solid #fff;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            object-fit: cover;
+            background-color: #eee;
+            transition: transform 0.3s ease; /* 滑鼠移入時的平滑動畫 */
+        }
+
+        /* 滑鼠懸停在大頭貼時輕微放大 */
+        .profile-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        /* 姓名與稱謂區塊樣式 */
+        .profile-details {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        /* 打字機效果的文字容器 */
+        #typing-text {
+            font-size: 1.125rem;
+            color: var(--primary);
+            font-weight: 600;
+            min-height: 1.6em; /* 固定高度防止打字時畫面跳動 */
+        }
+
+        /* 主要內容區內距 */
+        .main-content {
+            padding: 0 2rem 3rem;
+        }
+
+        /* 章節標題：使用左側邊框來做裝飾 */
+        .content-section {
+            margin-top: 2.5rem;
+            opacity: 0; /* 預設透明，由 JavaScript 控制顯示 */
+            transform: translateY(20px); /* 預設往下位移 20px */
+            transition: all 0.6s ease-out; /* 出現時的平滑效果 */
+        }
+
+        /* 當 JS 偵測到捲動時，會加上這個類別讓區塊浮現 */
+        .reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .content-section h2 {
+            font-size: 1.4rem;
+            border-left: 5px solid var(--primary);
+            padding-left: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        /* 技能標籤容器：使用 flex-wrap 讓標籤能自動換行 */
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        /* 單個技能小標籤的設計 */
+        .skill-badge {
+            background-color: #ebf2ff;
+            color: var(--primary);
+            padding: 0.4rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* 專案卡片網格佈局：寬度不足時自動換行 */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* 作品卡片樣式 */
+        .project-card {
+            background: #fff;
+            border-radius: 1rem;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        /* 移入專案卡片時向上移動並增加陰影 */
+        .project-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px -5px rgba(0,0,0,0.1);
+        }
+
+        .project-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .project-card-content {
+            padding: 1.25rem;
+        }
+
+        /* 頁尾樣式 */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* 響應式：當螢幕寬度大於 768px (平板/桌機) 時的排版優化 */
+        @media (min-width: 768px) {
+            .profile-banner { height: 14rem; }
+            .profile-info {
+                flex-direction: row; /* 從直排改為橫排 */
+                align-items: flex-end;
+                text-align: left;
+                padding: 0 3rem 2rem;
+            }
+            .profile-details {
+                text-align: left;
+                margin-left: 2rem;
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- 網頁主要內容區 -->
+        <main class="profile-card">
+            <!-- 頂部漸層橫幅 -->
+            <header class="profile-banner"></header>
+
+            <!-- 個人資訊區 (頭像、姓名、打字效果) -->
+            <section class="profile-info">
+                <!-- onerror：如果找不到 sean_resize.jpg，就用 JS 自動產生一個帶有名字縮寫的圖片 -->
+                <img id="avatar" src="./sean_resize.jpg" alt="Sean Lai" class="profile-avatar" 
+                     onerror="this.src='https://ui-avatars.com/api/?name=Sean+Lai&background=0D8ABC&color=fff'">
+                
+                <div class="profile-details">
+                    <h1 id="userName">賴修暘 (Sean Lai)</h1>
+                    <div id="typing-text"></div> <!-- 由 JavaScript 在此填入文字 -->
+                </div>
+            </section>
+
+            <div class="main-content">
+                <!-- 關於我 -->
+                <section class="content-section" id="about">
+                    <h2>關於我 About Me</h2>
+                    <p>哈囉！我是一個對寫程式充滿好奇心的國中生。目前正沉浸在 HTML、CSS 的世界裡，學習如何親手打造出漂亮的網頁介面和如何有效率的查東西。我也很享受從無到有創造出東西的成就感。希望我之後能了解更多關於更多電腦知識。</p>
+                </section>
+
+                <!-- 技能 -->
+                <section class="content-section" id="skills">
+                    <h2>技能專長 Skills</h2>
+                    <div class="skills-container">
+                        <span class="skill-badge">HTML</span>
+                        <span class="skill-badge">CSS</span>
+                        <span class="skill-badge">JavaScript</span>
+                        <span class="skill-badge">響應式網頁設計</span>
+                    </div>
+                </section>
+
+                <!-- 專案作品 -->
+                <section class="content-section" id="projects">
+                    <h2>作品專案 Projects</h2>
+                    <div class="project-grid">
+                        <!-- 專案卡片 1 -->
+                        <div class="project-card" onclick="showMsg('這是我練習排版與 CSS 漸層的作品！')">
+                            <img src="https://placehold.co/400x250/A9D5E5/333?text=Profile+Web" alt="作品1">
+                            <div class="project-card-content">
+                                <h3>個人檔案網站</h3>
+                                <p>完全使用 HTML/CSS 打造的響應式網頁。</p>
+                            </div>
+                        </div>
+                        <!-- 專案卡片 2 -->
+                        <div class="project-card" onclick="showMsg('即將連結到計算機程式...')">
+                            <img src="https://placehold.co/400x250/F4B8A9/333?text=Calculator" alt="作品2">
+                            <div class="project-card-content">
+                                <h3>網頁計算機</h3>
+                                <p>使用 JavaScript 邏輯處理數字運算的作品。</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- 頁尾 -->
+        <footer>
+            &copy; 2025 賴修暘 Sean Lai. <br>
+            <small>Built with pure HTML, CSS, and Vanilla JavaScript</small>
+        </footer>
+    </div>
+
+    <!-- JavaScript 邏輯區 -->
+    <script>
+        // --- 1. 動態打字效果 ---
+        const typingElement = document.getElementById('typing-text');
+        const phrases = ["Aspiring Developer", "國中生", "網頁開發愛好者"]; // 要輪播顯示的文字
+        let phraseIndex = 0;   // 目前是第幾個句子
+        let charIndex = 0;     // 目前打到第幾個字
+        let isDeleting = false; // 目前是否正在刪除文字
+
+        function type() {
+            const currentPhrase = phrases[phraseIndex];
+            
+            if (isDeleting) {
+                // 刪除模式：字數減 1
+                typingElement.textContent = currentPhrase.substring(0, charIndex - 1);
+                charIndex--;
+                
+                // 刪完後：切換回打字模式，並換下一個句子
+                if (charIndex === 0) {
+                    isDeleting = false;
+                    phraseIndex = (phraseIndex + 1) % phrases.length;
+                }
+            } else {
+                // 打字模式：字數加 1
+                typingElement.textContent = currentPhrase.substring(0, charIndex + 1);
+                charIndex++;
+                
+                // 打完後：停頓一下，然後切換到刪除模式
+                if (charIndex === currentPhrase.length) {
+                    isDeleting = true;
+                    setTimeout(type, 2000); // 在句尾停 2 秒
+                    return;
+                }
+            }
+            
+            // 刪除的速度比打字快一點
+            const speed = isDeleting ? 50 : 150;
+            setTimeout(type, speed);
+        }
+
+        // --- 2. 捲動顯示效果 (Scroll Reveal) ---
+        function revealSections() {
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                // 如果區塊頂端進入視窗底部以上 50px 的位置，就顯示它
+                if (sectionTop < window.innerHeight - 50) {
+                    section.classList.add('reveal');
+                }
+            });
+        }
+
+        // --- 3. 專案點擊互動 ---
+        function showMsg(message) {
+            // 如果點擊的是計算機專案
+            if(message.includes('計算機')) {
+                // 如果你有 calculator.html 檔案，可以跳轉過去
+                // window.location.href = 'calculator.html'; 
+                alert(message);
+            } else {
+                alert(message);
+            }
+        }
+
+        // 當瀏覽器視窗載入完成後執行的初始化動作
+        window.onload = () => {
+            type();           // 開始打字機動畫
+            revealSections(); // 檢查一次初始顯示狀態
+            
+            // 監聽網頁捲動事件，只要一捲動就檢查是否顯示區塊
+            window.addEventListener('scroll', revealSections);
+        };
+    </script>
+</body>
+</html>
